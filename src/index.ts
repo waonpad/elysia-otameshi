@@ -1,9 +1,13 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { logger } from "@bogeychan/elysia-logger";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
 import { autoload } from "elysia-autoload";
 import { postSchemas } from "./routes/posts";
+
+export const errorResponseSchema = t.Object({
+  message: t.String(),
+});
 
 export const app = new Elysia()
   .use(logger())
@@ -23,7 +27,7 @@ export const app = new Elysia()
     })
   )
   // モデルを登録する場合一番上のインスタンスに登録しないといけない
-  .model(postSchemas)
+  .model({ ...postSchemas, error: errorResponseSchema })
   .onError(({ code, error }) => {
     if (code === "UNKNOWN") {
       return {
@@ -39,6 +43,9 @@ export const app = new Elysia()
 
     return error;
   });
+
+// https://elysiajs.com/essential/plugin.html#testing
+await app.modules;
 
 app.listen(process.env.PORT as string, () =>
   console.log(`🦊 Server started at ${app.server?.url.origin}`)

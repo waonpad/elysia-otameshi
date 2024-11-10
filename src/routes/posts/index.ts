@@ -14,18 +14,16 @@ export const createPostSchema = t.Pick(postSchema, ["title"]);
 
 export const updatePostSchema = t.Pick(postSchema, ["title"]);
 
-// これだけを.modelで登録したElysiaインスんタンスをuseする事もできる
-// https://elysiajs.com/essential/validation.html#reference-model
-// 登録したモデルのキーでスキーマを登録できるみたいだけどSwagger UIに出てこないな・・・
-// 直接スキーマの変数を使わないといけないけど、それだとモデルの参照がされない・・・
+export const postListSchema = t.Object({
+  items: t.Array(postSchema),
+});
+
 export const postSchemas = {
   post: postSchema,
   "post.params": postParamsSchema,
   "post.create": createPostSchema,
   "post.update": updatePostSchema,
-  "post.list": t.Object({
-    items: t.Array(postSchema),
-  }),
+  "post.list": postListSchema,
 };
 
 export const posts: (typeof postSchema.static)[] = [
@@ -40,21 +38,13 @@ export default (app: ElysiaApp) =>
       { items: posts },
       {
         response: {
-          // 200: t.Object({
-          //   // 一部だけを文字列で指定はできない？？？
-          //   items: t.Array(postSchema),
-          // }),
           200: "post.list",
         },
       }
     )
     .post(
       "",
-      ({ body, error }) => {
-        // return error(500, {
-        //   message: "エラーが発生しました",
-        // });
-
+      ({ body }) => {
         const post = {
           id: posts.length + 1,
           title: body.title,

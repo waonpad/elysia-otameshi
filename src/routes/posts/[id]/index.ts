@@ -2,21 +2,26 @@ import { posts } from "..";
 
 export default (app: ElysiaApp) =>
   app
+    .guard({
+      params: "post.params",
+    })
     .get(
       "",
-      ({ params }) => {
+      ({ params, error }) => {
         const post = posts.find((post) => post.id === params.id);
 
         if (!post) {
-          throw new Error("Post not found");
+          return error(404, {
+            message: "Post not found",
+          });
         }
 
         return post;
       },
       {
-        params: "post.params",
         response: {
           200: "post",
+          404: "error",
         },
       }
     )
@@ -29,7 +34,6 @@ export default (app: ElysiaApp) =>
         };
       },
       {
-        params: "post.params",
         body: "post.update",
         response: {
           200: "post",
