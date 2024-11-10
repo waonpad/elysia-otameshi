@@ -4,6 +4,6 @@ import { treaty } from "@elysiajs/eden";
 
 const apiClient = treaty<ElysiaRoutes>(`http://localhost:${process.env.PORT}`);
 
-const { data } = await apiClient[""].get();
+const { data } = await apiClient.posts.get();
 
 console.log(data);

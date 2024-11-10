@@ -1,5 +1,4 @@
-import { t } from "elysia";
-import { posts, postSchema } from "..";
+import { posts } from "..";
 
 export default (app: ElysiaApp) =>
   app
@@ -15,9 +14,9 @@ export default (app: ElysiaApp) =>
         return post;
       },
       {
-        params: t.Pick(postSchema, ["id"]),
+        params: "post.params",
         response: {
-          200: postSchema,
+          200: "post",
         },
       }
     )
@@ -30,10 +29,10 @@ export default (app: ElysiaApp) =>
         };
       },
       {
-        params: t.Pick(postSchema, ["id"]),
-        body: t.Pick(postSchema, ["title"]),
+        params: "post.params",
+        body: "post.update",
         response: {
-          200: postSchema,
+          200: "post",
         },
       }
     );

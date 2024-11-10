@@ -10,6 +10,6 @@ import { app } from ".";
 const apiClient = treaty<ElysiaRoutes>(app);
 
 // nullになる
-const { data } = await apiClient[""].get();
+const { data } = await apiClient.posts.get();
 
 console.log(data);
