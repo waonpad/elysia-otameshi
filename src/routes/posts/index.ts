@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import { Elysia } from "elysia";
 import { modelsPlugin, type postSchema } from "../../schemas";
 
 export const posts: (typeof postSchema.static)[] = [

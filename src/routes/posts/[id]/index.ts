@@ -1,4 +1,4 @@
-import Elysia from "elysia";
+import { Elysia } from "elysia";
 import { posts } from "..";
 import { modelsPlugin } from "../../../schemas";
 
