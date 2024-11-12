@@ -26,6 +26,8 @@ export const postSchemas = {
   "post.list": postListSchema,
 };
 
+// TODO: バリデーションエラー時等のスキーマを正しく
+// TODO: エンドポイントごとに発生する可能性のあるエラースキーマを登録する
 export const errorResponseSchema = t.Object({
   message: t.String(),
 });
