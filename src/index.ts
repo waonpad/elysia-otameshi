@@ -2,12 +2,9 @@ import { Elysia, t } from "elysia";
 import { logger } from "@bogeychan/elysia-logger";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
-import { autoload } from "elysia-autoload";
-import { postSchemas } from "./routes/posts";
-
-export const errorResponseSchema = t.Object({
-  message: t.String(),
-});
+import indexRoutes from "./routes/index";
+import postsRoutes from "./routes/posts";
+import postRoutes from "./routes/posts/[id]";
 
 export const app = new Elysia()
   .use(logger())
@@ -17,17 +14,6 @@ export const app = new Elysia()
     })
   )
   .use(cors())
-  .use(
-    // サーバーを起動すると自動的にroutesディレクトリを読み込む
-    autoload({
-      types: {
-        output: "./elysia-routes.ts",
-        typeName: "ElysiaRoutes",
-      },
-    })
-  )
-  // モデルを登録する場合一番上のインスタンスに登録しないといけない
-  .model({ ...postSchemas, error: errorResponseSchema })
   .onError(({ code, error }) => {
     if (code === "UNKNOWN") {
       return {
@@ -42,7 +28,10 @@ export const app = new Elysia()
     }
 
     return error;
-  });
+  })
+  .use(indexRoutes)
+  .use(postsRoutes)
+  .use(postRoutes);
 
 // https://elysiajs.com/essential/plugin.html#testing
 await app.modules;
@@ -51,6 +40,4 @@ app.listen(process.env.PORT as string, () =>
   console.log(`🦊 Server started at ${app.server?.url.origin}`)
 );
 
-declare global {
-  export type ElysiaApp = typeof app;
-}
+export type ElysiaApp = typeof app;
