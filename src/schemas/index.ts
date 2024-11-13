@@ -26,20 +26,69 @@ export const postSchemas = {
   "post.list": postListSchema,
 };
 
-// TODO: バリデーションエラー時等のスキーマを正しく
-// TODO: エンドポイントごとに発生する可能性のあるエラースキーマを登録する
-export const errorResponseSchema = t.Object({
-  message: t.String(),
-});
+export const errorResponseSchema = <Code extends string>({
+  code,
+}: {
+  code: Code;
+}) =>
+  t.Object({
+    code: t.Literal(code, { default: code }),
+    message: t.String(),
+  });
+
+export const ValidationErrorDetailSchema = t.Union([
+  t.Object({
+    summary: t.Undefined(),
+  }),
+  t.Object({
+    summary: t.String(),
+    type: t.Number(),
+    schema: t.Object({}),
+    path: t.String(),
+    value: t.Any(),
+    message: t.String(),
+  }),
+]);
+
+export const validationErrorResponseSchema = t.Composite([
+  errorResponseSchema({ code: "VALIDATION" }),
+  t.Object({
+    on: t.String(),
+    expected: t.Any(),
+    found: t.Any(),
+    errors: t.Array(ValidationErrorDetailSchema),
+  }),
+]);
+
+export const errorResponseSchemas = {
+  "error.NOT_FOUND": errorResponseSchema({ code: "NOT_FOUND" }),
+  "error.VALIDATION": validationErrorResponseSchema,
+  "error.INVALID_COOKIE_SIGNATURE": t.Composite([
+    errorResponseSchema({
+      code: "INVALID_COOKIE_SIGNATURE",
+    }),
+    t.Object({
+      key: t.String(),
+    }),
+  ]),
+  "error.PARSE": errorResponseSchema({ code: "PARSE" }),
+  "error.INTERNAL_SERVER_ERROR": errorResponseSchema({
+    code: "INTERNAL_SERVER_ERROR",
+  }),
+};
+
+export const schemas = {
+  ...postSchemas,
+  ...errorResponseSchemas,
+};
 
 // https://elysiajs.com/essential/structure.html#model-injection
 // https://elysiajs.com/essential/validation.html#reference-model
 //
 // https://elysiajs.com/essential/plugin.html#plugin-deduplication
 // models という名前で判別されるので、何度useしても重複は排除される
+//
+// レスポンスのバリデーションはされない事に注意
 export const modelsPlugin = new Elysia({ name: "models" })
-  .model({
-    ...postSchemas,
-    error: errorResponseSchema,
-  })
+  .model(schemas)
   .as("plugin");

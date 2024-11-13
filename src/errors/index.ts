@@ -1,4 +1,5 @@
 import { Elysia, type ValidationError } from "elysia";
+import type { errorResponseSchemas } from "../schemas";
 
 // https://elysiajs.com/essential/life-cycle.html#on-error
 export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
@@ -10,7 +11,7 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
       return {
         code,
         message: error.message,
-      };
+      } satisfies (typeof errorResponseSchemas)["error.NOT_FOUND"]["static"];
     }
 
     if (code === "VALIDATION") {
@@ -48,7 +49,7 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
         expected: parsedError.expected,
         found: parsedError.found,
         errors: parsedError.errors,
-      };
+      } satisfies (typeof errorResponseSchemas)["error.VALIDATION"]["static"];
     }
 
     if (code === "INVALID_COOKIE_SIGNATURE") {
@@ -57,7 +58,7 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
         key: error.key,
         code,
         message: error.message,
-      };
+      } satisfies (typeof errorResponseSchemas)["error.INVALID_COOKIE_SIGNATURE"]["static"];
     }
 
     if (code === "PARSE") {
@@ -65,7 +66,7 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
       return {
         code,
         message: error.message,
-      };
+      } satisfies (typeof errorResponseSchemas)["error.PARSE"]["static"];
     }
 
     if (code === "INTERNAL_SERVER_ERROR") {
@@ -73,7 +74,7 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
       return {
         code,
         message: error.message,
-      };
+      } satisfies (typeof errorResponseSchemas)["error.INTERNAL_SERVER_ERROR"]["static"];
     }
 
     // Elysiaの組み込みエラー以外で投げられたエラー
@@ -81,7 +82,7 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
     return {
       code: "INTERNAL_SERVER_ERROR",
       message: error.message,
-    };
+    } satisfies (typeof errorResponseSchemas)["error.INTERNAL_SERVER_ERROR"]["static"];
   })
   // https://elysiajs.com/essential/plugin.html#_3-instance-as
   .as("plugin");
