@@ -1,8 +1,8 @@
 import { Elysia, type ValidationError } from "elysia";
 
 // https://elysiajs.com/essential/life-cycle.html#on-error
-export const errorHandlePlugin = new Elysia({ name: "errorHandle" }).onError(
-  ({ code, error, set }) => {
+export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
+  .onError(({ code, error, set }) => {
     console.error(error);
 
     if (code === "NOT_FOUND") {
@@ -82,5 +82,6 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" }).onError(
       code: "INTERNAL_SERVER_ERROR",
       message: error.message,
     };
-  }
-);
+  })
+  // https://elysiajs.com/essential/plugin.html#_3-instance-as
+  .as("plugin");

@@ -1,7 +1,9 @@
 import { Elysia, t } from "elysia";
 
 export const postSchema = t.Object({
-  id: t.Number(),
+  id: t.Number({
+    minimum: 2,
+  }),
   title: t.String({
     minLength: 1,
     examples: ["First post"],
@@ -32,9 +34,14 @@ export const errorResponseSchema = t.Object({
   message: t.String(),
 });
 
+// https://elysiajs.com/essential/structure.html#model-injection
+// https://elysiajs.com/essential/validation.html#reference-model
+//
 // https://elysiajs.com/essential/plugin.html#plugin-deduplication
 // models という名前で判別されるので、何度useしても重複は排除される
-export const modelsPlugin = new Elysia({ name: "models" }).model({
-  ...postSchemas,
-  error: errorResponseSchema,
-});
+export const modelsPlugin = new Elysia({ name: "models" })
+  .model({
+    ...postSchemas,
+    error: errorResponseSchema,
+  })
+  .as("plugin");
