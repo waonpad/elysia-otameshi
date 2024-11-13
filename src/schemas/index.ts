@@ -1,9 +1,7 @@
 import { Elysia, t } from "elysia";
 
 export const postSchema = t.Object({
-  id: t.Number({
-    minimum: 2,
-  }),
+  id: t.Number(),
   title: t.String({
     minLength: 1,
     examples: ["First post"],
