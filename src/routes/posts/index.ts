@@ -8,16 +8,13 @@ export const posts: (typeof postSchema.static)[] = [
 
 export default new Elysia({ prefix: "/posts" })
   .use(modelsPlugin)
-  .get(
-    "",
-    { items: posts },
-    {
-      response: {
-        200: "post.list",
-        500: "error.INTERNAL_SERVER_ERROR",
-      },
-    }
-  )
+  // NOTICE: ハンドラを関数ではなくオブジェクトとして書いてもハンドラ自体は動作はするがレスポンスのバリデーションが効かない(バグ？)
+  .get("", () => ({ items: posts }), {
+    response: {
+      200: "post.list",
+      500: "error.INTERNAL_SERVER_ERROR",
+    },
+  })
   .post(
     "",
     ({ body }) => {

@@ -14,9 +14,14 @@ export const createPostSchema = t.Pick(postSchema, ["title"]);
 
 export const updatePostSchema = t.Pick(postSchema, ["title"]);
 
-export const postListSchema = t.Object({
-  items: t.Array(postSchema),
-});
+export const postListSchema = t.Object(
+  {
+    items: t.Array(postSchema, { minItems: 5 }),
+  }
+  // NOTICE: モデル参照の場合、additionalPropertiesが勝手にtrueになってしまい余剰プロパティも返されてしまう。スキーマオブジェクトを直接指定するとそうはならない(バグ？)
+  // 全部にadditionalProperties: falseを指定するの流石にだるい
+  // { additionalProperties: false }
+);
 
 export const postSchemas = {
   post: postSchema,

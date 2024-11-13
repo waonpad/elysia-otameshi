@@ -24,12 +24,13 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
         on: // ある程度Elysiaのコード見て型を出した
         // https://github.com/elysiajs/elysia/blob/main/src/compose.ts
         // https://github.com/elysiajs/elysia/blob/main/src/type-system.ts
-        | "property" // パスパラメータのバリデーションエラーがparamsではなくpropertyになる(バグ？そもそもpropertyとは)
+        | "property" // NOTICE: パスパラメータのバリデーションエラーがparamsではなくpropertyになる(バグ？そもそもpropertyとは)
           | "params"
           | "body"
           | "query"
           | "headers"
           | "cookie"
+          | "response" // レスポンスの形式が不正だった場合
           | "message" // WebSocket？ https://github.com/elysiajs/elysia/blob/e715e006edd603c1b65b7a77401034201c89579a/src/ws/index.ts#L74
           | "env" // これはサーバー起動中にはならなさそう？ https://github.com/elysiajs/elysia/blob/93d457b9277f07f1f155ef867af97128130286dc/src/index.ts#L347
           | "header" // headersとは違う？？？ https://github.com/elysiajs/elysia/blob/e715e006edd603c1b65b7a77401034201c89579a/src/dynamic-handle.ts#L241
