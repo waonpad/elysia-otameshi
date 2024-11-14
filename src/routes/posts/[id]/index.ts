@@ -1,4 +1,4 @@
-import { Elysia, t } from "elysia";
+import { Elysia, NotFoundError, t } from "elysia";
 import { posts } from "..";
 import { modelsPlugin, type schemas } from "../../../schemas";
 
@@ -9,14 +9,16 @@ export default new Elysia({ prefix: "/posts/:id" })
   })
   .get(
     "",
-    ({ params, error }) => {
+    ({ params }) => {
       const post = posts.find((post) => post.id === params.id);
 
       if (!post) {
-        return error(404, {
-          code: "NOT_FOUND",
-          message: "Post not found",
-        });
+        // return errorだとonErrorが呼ばれないためthrowしてしまう？
+        // return error(404, {
+        //   code: "NOT_FOUND",
+        //   message: "Post not found",
+        // });
+        throw new NotFoundError("Post not found");
       }
 
       return post;
@@ -31,14 +33,11 @@ export default new Elysia({ prefix: "/posts/:id" })
   )
   .put(
     "",
-    ({ body, params, error }) => {
+    ({ body, params }) => {
       const post = posts.find((post) => post.id === params.id);
 
       if (!post) {
-        return error(404, {
-          code: "NOT_FOUND",
-          message: "Post not found",
-        });
+        throw new NotFoundError("Post not found");
       }
 
       return {
