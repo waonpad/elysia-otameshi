@@ -36,10 +36,15 @@ export const errorResponseSchema = <Code extends string>({
 }: {
   code: Code;
 }) =>
-  t.Object({
-    code: t.Literal(code, { default: code }),
-    message: t.String(),
-  });
+  t.Object(
+    {
+      code: t.Literal(code, { default: code }),
+      message: t.String(),
+    },
+    {
+      $id: `#/components/schemas/error.${code}`,
+    }
+  );
 
 export const ValidationErrorDetailSchema = t.Union([
   t.Object({
@@ -55,27 +60,40 @@ export const ValidationErrorDetailSchema = t.Union([
   }),
 ]);
 
-export const validationErrorResponseSchema = t.Composite([
-  errorResponseSchema({ code: "VALIDATION" }),
-  t.Object({
-    on: t.String(),
-    expected: t.Any(),
-    found: t.Any(),
-    errors: t.Array(ValidationErrorDetailSchema),
-  }),
-]);
+export const validationErrorResponseSchema = t.Composite(
+  [
+    errorResponseSchema({ code: "VALIDATION" }),
+    t.Object({
+      on: t.String(),
+      expected: t.Any(),
+      found: t.Any(),
+      errors: t.Array(ValidationErrorDetailSchema),
+    }),
+  ],
+  {
+    $id: "#/components/schemas/error.VALIDATION",
+  }
+);
 
+// $idがないと参照ができないっぽい
+// エラーになる
+// Unable to dereference schema with $id 'undefined'
 export const errorResponseSchemas = {
   "error.NOT_FOUND": errorResponseSchema({ code: "NOT_FOUND" }),
   "error.VALIDATION": validationErrorResponseSchema,
-  "error.INVALID_COOKIE_SIGNATURE": t.Composite([
-    errorResponseSchema({
-      code: "INVALID_COOKIE_SIGNATURE",
-    }),
-    t.Object({
-      key: t.String(),
-    }),
-  ]),
+  "error.INVALID_COOKIE_SIGNATURE": t.Composite(
+    [
+      errorResponseSchema({
+        code: "INVALID_COOKIE_SIGNATURE",
+      }),
+      t.Object({
+        key: t.String(),
+      }),
+    ],
+    {
+      $id: "#/components/schemas/error.INVALID_COOKIE_SIGNATURE",
+    }
+  ),
   "error.PARSE": errorResponseSchema({ code: "PARSE" }),
   "error.INTERNAL_SERVER_ERROR": errorResponseSchema({
     code: "INTERNAL_SERVER_ERROR",
