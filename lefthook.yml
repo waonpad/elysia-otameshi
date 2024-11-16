@@ -1,0 +1,16 @@
+pre-push:
+  commands:
+    run-type-check:
+      run: bun run tsc
+
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      glob: "*.{js,jsx,ts,tsx,mts,mjs,cjs}"
+      run: |
+        bun run biome check --write {staged_files}
+      stage_fixed: true
+      skip:
+        - merge
+        - rebase

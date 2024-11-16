@@ -29,7 +29,7 @@ export default new Elysia({ prefix: "/posts/:id" })
         404: "error.NOT_FOUND",
         500: "error.INTERNAL_SERVER_ERROR",
       },
-    }
+    },
   )
   .put(
     "",
@@ -50,22 +50,13 @@ export default new Elysia({ prefix: "/posts/:id" })
       response: {
         200: "post",
         400: t.Union([
-          t.Ref(
-            "#/components/schemas/error.VALIDATION" satisfies `#/components/schemas/${keyof typeof schemas}`
-          ),
-          t.Ref(
-            "#/components/schemas/error.PARSE" satisfies `#/components/schemas/${keyof typeof schemas}`
-          ),
+          t.Ref("#/components/schemas/error.VALIDATION" satisfies `#/components/schemas/${keyof typeof schemas}`),
+          t.Ref("#/components/schemas/error.PARSE" satisfies `#/components/schemas/${keyof typeof schemas}`),
         ]) as unknown as ReturnType<
-          typeof t.Union<
-            [
-              (typeof schemas)["error.VALIDATION"],
-              (typeof schemas)["error.PARSE"]
-            ]
-          >
+          typeof t.Union<[(typeof schemas)["error.VALIDATION"], (typeof schemas)["error.PARSE"]]>
         >,
         404: "error.NOT_FOUND",
         500: "error.INTERNAL_SERVER_ERROR",
       },
-    }
+    },
   );

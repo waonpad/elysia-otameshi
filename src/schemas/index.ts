@@ -17,7 +17,7 @@ export const updatePostSchema = t.Pick(postSchema, ["title"]);
 export const postListSchema = t.Object(
   {
     items: t.Array(postSchema),
-  }
+  },
   // NOTICE: モデル参照の場合、additionalPropertiesが勝手にtrueになってしまい余剰プロパティも返されてしまう。スキーマオブジェクトを直接指定するとそうはならない(バグ？)
   // 全部にadditionalProperties: falseを指定するの流石にだるい
   // { additionalProperties: false }
@@ -43,7 +43,7 @@ export const errorResponseSchema = <Code extends string>({
     },
     {
       $id: `#/components/schemas/error.${code}`,
-    }
+    },
   );
 
 export const ValidationErrorDetailSchema = t.Union([
@@ -72,7 +72,7 @@ export const validationErrorResponseSchema = t.Composite(
   ],
   {
     $id: "#/components/schemas/error.VALIDATION",
-  }
+  },
 );
 
 // $idがないと参照ができないっぽい
@@ -92,7 +92,7 @@ export const errorResponseSchemas = {
     ],
     {
       $id: "#/components/schemas/error.INVALID_COOKIE_SIGNATURE",
-    }
+    },
   ),
   "error.PARSE": errorResponseSchema({ code: "PARSE" }),
   "error.INTERNAL_SERVER_ERROR": errorResponseSchema({
@@ -112,6 +112,4 @@ export const schemas = {
 // models という名前で判別されるので、何度useしても重複は排除される
 //
 // レスポンスのバリデーションはされない事に注意
-export const modelsPlugin = new Elysia({ name: "models" })
-  .model(schemas)
-  .as("plugin");
+export const modelsPlugin = new Elysia({ name: "models" }).model(schemas).as("plugin");

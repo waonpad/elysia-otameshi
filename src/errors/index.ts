@@ -24,7 +24,7 @@ export const errorHandlePlugin = new Elysia({ name: "errorHandle" })
         on: // ある程度Elysiaのコード見て型を出した
         // https://github.com/elysiajs/elysia/blob/main/src/compose.ts
         // https://github.com/elysiajs/elysia/blob/main/src/type-system.ts
-        | "property" // NOTICE: パスパラメータのバリデーションエラーがparamsではなくpropertyになる(バグ？そもそもpropertyとは)
+          | "property" // NOTICE: パスパラメータのバリデーションエラーがparamsではなくpropertyになる(バグ？そもそもpropertyとは)
           | "params"
           | "body"
           | "query"

@@ -1,9 +1,11 @@
 {
   "name": "elysia-otameshi",
   "scripts": {
+    "prepare": "lefthook install",
     "dev": "bun run --watch src/index.ts",
-    "lint": "bunx @biomejs/biome check src",
-    "lint:fix": "bun lint --apply"
+    "fmt": "biome format --write .",
+    "lnt": "biome lint --write .",
+    "che": "biome check --write ."
   },
   "dependencies": {
     "@bogeychan/elysia-logger": "^0.1.1",
@@ -15,6 +17,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@types/bun": "^1.1.6",
+    "lefthook": "^1.8.2",
     "typescript": "^5.5.4"
   },
   "patchedDependencies": {
